@@ -20,7 +20,27 @@ const plexMono = IBM_Plex_Mono({
 
 const FALLBACK_SITE_URL = "http://localhost:3000";
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? FALLBACK_SITE_URL;
+function parseSiteUrl(value: string | undefined): string | undefined {
+  const trimmed = value?.trim();
+  if (!trimmed) return undefined;
+  const withScheme = trimmed.includes("://") ? trimmed : `https://${trimmed}`;
+  return URL.canParse(withScheme) ? withScheme : undefined;
+}
+
+function vercelSiteUrl(): string | undefined {
+  if (process.env.VERCEL_ENV === "production") {
+    return (
+      parseSiteUrl(process.env.VERCEL_PROJECT_PRODUCTION_URL) ??
+      parseSiteUrl(process.env.VERCEL_URL)
+    );
+  }
+  return parseSiteUrl(process.env.VERCEL_URL);
+}
+
+const siteUrl =
+  parseSiteUrl(process.env.NEXT_PUBLIC_SITE_URL) ??
+  vercelSiteUrl() ??
+  FALLBACK_SITE_URL;
 
 function siteMetadataBase(value: string): URL {
   return URL.canParse(value) ? new URL(value) : new URL(FALLBACK_SITE_URL);

@@ -78,6 +78,8 @@ flowchart TB
 |----------|-------|
 | `NEXT_PUBLIC_BACKEND_URL` | `https://<your-railway-or-render-api-url>` |
 
+The canonical site URL is the Vercel production domain automatically. Set `NEXT_PUBLIC_SITE_URL` only for a custom domain.
+
 5. Deploy. Vercel detects Bun from `frontend/bun.lock` and uses `frontend/vercel.json` (`npm exec bun@1.4.0 install --frozen-lockfile`, then `next build` on Node). Do not enable the Bun Function runtime (`bunVersion`). Vercel's default installer is still Bun 1.3.x, which cannot read this lockfile (`lockfileVersion` 3).
 
 ## Step 3. Link frontend and backend
